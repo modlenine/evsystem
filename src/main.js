@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import 'datatables.net-bs4'
+
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 

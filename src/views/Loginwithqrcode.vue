@@ -484,7 +484,7 @@ export default {
                         timer:2500
                     }).then(()=>{
                         if(setSessionValue(user_result)){
-                            location.reload();
+                            router.replace("/");
                         }
                     });
                 }else if(res.data.status == "Not Found Data"){

@@ -24,6 +24,8 @@
 	</div>
     <Leftmenu/>
 	<div class="mobile-menu-overlay"></div>
+	<!-- This is where the script will be dynamically added -->
+    <div id="scripts"></div>
   </div>
 </template>
 
@@ -36,7 +38,33 @@ export default {
     Leftmenu ,
 	Userinfo,
 	Usernotify
-  }
+  },
+	mounted() {
+    	this.loadScript();
+  	},
+	methods: {
+		loadScript() {
+		// Check if script already exists
+		const existingScript = document.querySelector('#scripts script[src="assets/vendors/scripts/script.min.js"]');
+		if (existingScript) {
+			// If exists, remove it to reload
+			existingScript.remove();
+		}
+
+		// Create a new script element
+		const script = document.createElement("script");
+		script.type = "application/javascript";
+		script.defer = true;
+		script.src = "assets/vendors/scripts/script.min.js"; // Update this path as needed
+		script.onload = () => {
+			console.log("Script loaded successfully.");
+			// You can add any initialization code here if needed after the script loads
+		};
+
+			// Append the script to the div#scripts
+			document.getElementById("scripts").appendChild(script);
+		},
+  	},
 }
 </script>
 
