@@ -8,7 +8,22 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@primevue/themes": "^4.0.4",
+    "axios": "^1.7.4",
+    "bootstrap": "^5.3.3",
     "core-js": "^3.6.5",
+    "datatables.net": "^2.1.4",
+    "datatables.net-bs4": "^2.1.4",
+    "datatables.net-bs5": "^2.1.4",
+    "datatables.net-buttons-bs4": "^3.1.1",
+    "datatables.net-dt": "^2.1.4",
+    "datatables.net-responsive-dt": "^3.0.2",
+    "datatables.net-scroller-bs4": "^2.4.3",
+    "datatables.net-select-dt": "^2.0.5",
+    "datatables.net-vue3": "^3.0.2",
+    "jquery": "^3.7.1",
+    "primevue": "^4.0.4",
+    "sweetalert2": "^11.12.4",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
