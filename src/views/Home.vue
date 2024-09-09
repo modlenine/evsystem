@@ -14,6 +14,7 @@
                   </div><br>
                 </div>
                 <div v-else>
+                  div.row.g
                   <div class="unavaliableCharge">Unavalilable</div>
                 </div>
 							</div>
@@ -73,6 +74,7 @@
 				</div>
 
         <div v-if="isShowChargeMain" class="row clearfix progress-box">
+          <div class="col-md-12 form-group d-flex justify-content-center mt-3"><h4>ผู้ใช้งานท่านอื่นกำลังใช้บริการ</h4></div>
           <div class="col-md-2 form-group"></div>
 					<div class="col-md-8 form-group">
 						<div class="card-box pd-30 height-100-p d-flex justify-content-center">
