@@ -9,7 +9,7 @@
               <br>
               <div class="pd-20 card-box height-100-p">
 								<div class="profile-photo">
-									<img :src="baseUrl+'assets/vendors/images/photo1.jpg'" alt="" class="avatar-photo">
+									<img :src="baseUrl+'assets/vendors/images/userlogin.svg'" alt="" class="avatar-photo">
 								</div>
 								<h5 class="text-center h5 mb-0">{{userInfo.customer_name}}</h5>
 								<p class="text-center text-muted font-14">

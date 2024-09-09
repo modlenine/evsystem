@@ -253,6 +253,8 @@ export default {
             store.dispatch('fetchSessionValue' , 'userSessionValue');
         }
 
+        loadUserSessionValue();
+
         // เข้าถึง state โดยใช้ computed เพื่อให้ reactive
         const updateUserActivateStatus = (status) => {
             store.dispatch('updateUserActivateStatus', status);
@@ -484,7 +486,7 @@ export default {
                         timer:2500
                     }).then(()=>{
                         if(setSessionValue(user_result)){
-                            router.replace("/");
+                            location.reload();
                         }
                     });
                 }else if(res.data.status == "Not Found Data"){

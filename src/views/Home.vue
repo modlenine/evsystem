@@ -8,9 +8,14 @@
 					<div class="col-md-3"></div>
 					<div class="col-md-6">
 						<div class="h3 text-center">สถานะตู้ชาร์จ</div>
-							<div v-if="machineChargerData !== null">
-								<div :class="machineChargerData.charge_point_status ==='Unavailable' ? 'unavaliableCharge' : 'avaliableCharge'">{{machineChargerData.charge_point_status}}
-								</div><br>
+							<div v-if="machineChargerData_main !== null">
+                <div v-if="machineChargerData !== null">
+                  <div :class="machineChargerData_main.charge_point_status ==='Unavailable' ? 'unavaliableCharge' : 'avaliableCharge'">{{machineChargerData_main.charge_point_status}}
+                  </div><br>
+                </div>
+                <div v-else>
+                  <div class="unavaliableCharge">Unavalilable</div>
+                </div>
 							</div>
 							<div v-else>
 								<div class="avaliableCharge">ไม่พบการชาร์จ</div>
@@ -32,7 +37,7 @@
           			<div class="col-md-2 form-group"></div>
 				</div>
 
-        		<div class="row pb-10" v-if="isShowCharge">
+        <div class="row pb-10" v-if="isShowCharge">
 					<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
 						<div class="card-box height-100-p cardCharger">
 							<div class="text-center">
@@ -67,6 +72,41 @@
 					</div>
 				</div>
 
+        <div v-if="isShowChargeMain" class="row clearfix progress-box">
+          <div class="col-md-2 form-group"></div>
+					<div class="col-md-8 form-group">
+						<div class="card-box pd-30 height-100-p d-flex justify-content-center">
+							<Knob v-model="currentBatt_main" valueTemplate="{value}%" :size="200" />
+						</div>
+					</div>
+          <div class="col-md-2 form-group"></div>
+				</div>
+
+        <div class="row pb-10" v-if="isShowChargeMain">
+					<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+						
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+						<div class="card-box height-100-p cardCharger">
+							<div class="text-center">
+								<span><b>เวลาเริ่ม : </b></span><br>
+								<span>{{machineChargerData_main.start_time}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+						<div class="card-box height-100-p cardCharger">
+							<div class="text-center">
+								<span><b>เวลาสิ้นสุด : </b></span><br>
+								<span>{{machineChargerData_main.stop_time}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-6 mb-20">
+						
+					</div>
+				</div>
+
 			</div>
 
 		</div>
@@ -95,9 +135,16 @@ export default {
 
       const isLoading = ref(false);
       const isShowCharge = ref(false);
+
+      const isShowChargeMain = ref(false);
+
       const machineChargerData = ref('');
+      const machineChargerData_main = ref('');
+
       let timerId;
+      let timerId_main;
       let currentBatt = ref(0);
+      let currentBatt_main = ref(0);
       let sumprice = ref('');
 
       const fetchdataCharger = async () => {
@@ -135,6 +182,8 @@ export default {
                   fetchdataChargerRealtime(result.card_no);
                 }
               }
+            }else{
+              isShowChargeMain.value = true;
             }
             //code
           }
@@ -146,13 +195,47 @@ export default {
         }
       }
 
+      const fetchdataChargerAdmin = async () => {
+        const formdata = new FormData();
+        formdata.append('action' , 'fetchdataChargerAdmin');
+        try {
+          const res = await axios.post(`${backendurl.value}evsystem/evsystem_backend/main/fetchdataCharger_admin` , formdata , {
+            headers:{
+              'Content-Type':'multipart/form-data'
+            }
+          });
+          console.log(res.data);
+          // isLoading.value = true;
+          if(res.data.status == "Select Data Success"){
+            machineChargerData_main.value = res.data.result;
+            //code
+            if(res.data.result !== null){
+              let result = res.data.result;
+              if(result.charge_point_status == 'Available' || result.charge_point_status == 'Preparing'){
+                //code
+                isShowChargeMain.value = false;
+              }else{
+                fetchdataChargerRealtimeAdmin(result.card_no , result.charge_point_status);
+              }
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }finally {
+          // เรียกฟังก์ชันอีกครั้งหลังจากที่คำขอถูกดำเนินการเสร็จสิ้น
+          timerId_main = setTimeout(fetchdataChargerAdmin, 3000);
+        }
+      }
+
       const startFetchingData = () => {
         fetchdataCharger(); // เริ่มการเช็กข้อมูลครั้งแรก
+        fetchdataChargerAdmin();
       };
 
       const stopFetchingData = () => {
         if (timerId) {
           clearTimeout(timerId); // หยุดการเรียกเมื่อไม่ต้องการแล้ว
+          clearTimeout(timerId_main); // หยุดการเรียกเมื่อไม่ต้องการแล้ว
         }
       };
 
@@ -199,12 +282,41 @@ export default {
         }
       }
 
+      const fetchdataChargerRealtimeAdmin = async (card_no , status) =>{
+        //code
+        const formdata = new FormData();
+        formdata.append('card_no' , card_no);
+        try {
+          const res = await axios.post(`${backendurl.value}evsystem/evsystem_backend/main/fetchRealtimeDataCharger_admin` , formdata , {
+            headers:{
+              'Content-Type':'multipart/form-data'
+            }
+          });
+          console.log(res.data);
+          if(res.data.status == "Select Data Success"){
+            let result = res.data.result;
+            for(let key in result){
+              if(result[key].context == "Sample.Periodic" && result[key].measurand == "SoC"){
+                if(status == "Finishing" || result[key].card_no_stop !== null){
+                  currentBatt_main.value = 100;
+                }else{
+                  currentBatt_main.value = result[key].meter_value;
+                }
+              }
+
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       return{
-        isLoading,isShowCharge,
-        machineChargerData,
+        isLoading,isShowCharge, isShowChargeMain ,
+        machineChargerData, machineChargerData_main ,
         startFetchingData,
         stopFetchingData,
-        currentBatt , sumprice
+        currentBatt , sumprice , currentBatt_main
       }
     }
 }

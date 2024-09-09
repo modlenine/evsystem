@@ -76,6 +76,8 @@ export default {
       }
     });
 
+
+
     return {
       currentRoute: route.path,
       cardid:route.params,
